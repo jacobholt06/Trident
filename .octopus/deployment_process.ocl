@@ -7,7 +7,6 @@ step "deploy-trident-website" {
 
     action "remove-from-load-balancer" {
         action_type = "Octopus.Script"
-        environments = ["staging", "production"]
         name = "Remove from load balancer"
         properties = {
             Octopus.Action.RunOnServer = "false"
