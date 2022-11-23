@@ -25,7 +25,11 @@ step "run-octopus-deploy-runbook" {
 }
 
 step "generate-db-delta-report" {
+    condition = "Variable"
     name = "Generate DB Delta Report"
+    properties = {
+        Octopus.Step.ConditionVariableExpression = "#{if Octopus.Deployment.Error == \"\"}#{Project.Database.ApprovalRequired}#{/if}\""
+    }
 
     action {
         action_type = "Octopus.Script"
