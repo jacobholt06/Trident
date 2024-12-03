@@ -20,7 +20,6 @@ step "run-octopus-deploy-runbook" {
 
     action {
         properties = {
-            Octopus.Action.RunOnServer = "true"
             Octopus.Action.Template.Id = "ActionTemplates-61"
             Octopus.Action.Template.Version = "14"
             Run.Runbook.Api.Key = "#{Project.Runbook.Api.Key}"
@@ -52,7 +51,6 @@ step "generate-db-delta-report" {
     action {
         action_type = "Octopus.Script"
         properties = {
-            Octopus.Action.RunOnServer = "true"
             Octopus.Action.Script.ScriptBody = <<-EOT
                 $packagePath = $OctopusParameters["Octopus.Action.Package[Trident.Database].ExtractedPath"]
                 $connectionString = $OctopusParameters["Project.Connection.String"]
@@ -66,7 +64,7 @@ step "generate-db-delta-report" {
                 & $appToRun --ConnectionString="$connectionString" --PreviewReportPath="$reportPath"
                 
                 New-OctopusArtifact -Path "$generatedReport" -Name "$environmentName.UpgradeReport.html"
-            EOT
+                EOT
             Octopus.Action.Script.ScriptSource = "Inline"
             Octopus.Action.Script.Syntax = "PowerShell"
         }
@@ -98,7 +96,6 @@ step "auto-approve-database-delta-script" {
             Databases.AutoApproval.ReportPath = "#{Project.Database.Report.Path}\\UpgradeReport.html"
             Databases.AutoApprove.CommandsIndicatingChange = "#{SQL.Verification.Change.List}"
             Databases.AutoApprove.CommandsRequireApproval = "#{SQL.Verification.Command.List}"
-            Octopus.Action.RunOnServer = "true"
             Octopus.Action.Template.Id = "ActionTemplates-62"
             Octopus.Action.Template.Version = "0"
         }
@@ -113,7 +110,6 @@ step "enable-maintenance-mode" {
     action {
         action_type = "Octopus.Script"
         properties = {
-            Octopus.Action.RunOnServer = "true"
             Octopus.Action.Script.ScriptBody = "Write-Host \"Enable Maintenance Mode\""
             Octopus.Action.Script.ScriptSource = "Inline"
             Octopus.Action.Script.Syntax = "PowerShell"
@@ -136,6 +132,7 @@ step "approve-db-delta-script" {
             Octopus.Action.Manual.BlockConcurrentDeployments = "True"
             Octopus.Action.Manual.Instructions = "Please approve the delta script found in the artefacts sections"
             Octopus.Action.Manual.ResponsibleTeamIds = "dbas,global/octopus-managers"
+            Octopus.Action.RunOnServer = "false"
         }
         tenant_tags = ["Branch Type/Pseudo"]
         worker_pool_variable = ""
@@ -152,7 +149,6 @@ step "deploy-the-db-changes" {
     action {
         action_type = "Octopus.Script"
         properties = {
-            Octopus.Action.RunOnServer = "true"
             Octopus.Action.Script.ScriptBody = <<-EOT
                 $packagePath = $OctopusParameters["Octopus.Action.Package[Trident.Database].ExtractedPath"]
                 $connectionString = $OctopusParameters["Project.Connection.String"]
@@ -161,7 +157,7 @@ step "deploy-the-db-changes" {
                 $appToRun = ".\Octopus.Trident.Database.DbUp"
                 
                 & $appToRun --ConnectionString="$connectionString"
-            EOT
+                EOT
             Octopus.Action.Script.ScriptSource = "Inline"
             Octopus.Action.Script.Syntax = "PowerShell"
         }
@@ -195,6 +191,7 @@ step "deploy-trident-website-1" {
             Octopus.Action.Package.FeedId = "octopus-server-built-in"
             Octopus.Action.Package.JsonConfigurationVariablesTargets = "appsettings.json"
             Octopus.Action.Package.PackageId = "Trident.Database"
+            Octopus.Action.RunOnServer = "false"
         }
         worker_pool_variable = ""
 
@@ -219,6 +216,7 @@ step "manual-intervention-to-verify-trident-application" {
             Octopus.Action.Manual.BlockConcurrentDeployments = "False"
             Octopus.Action.Manual.Instructions = "Please Verify the Trident Application"
             Octopus.Action.Manual.ResponsibleTeamIds = "global/octopus-managers,test"
+            Octopus.Action.RunOnServer = "false"
         }
         worker_pool_variable = ""
     }
@@ -230,7 +228,6 @@ step "disable-maintenance-mode" {
     action {
         action_type = "Octopus.Script"
         properties = {
-            Octopus.Action.RunOnServer = "true"
             Octopus.Action.Script.ScriptBody = "Write-Host \"Disable Maintenance Mode\""
             Octopus.Action.Script.ScriptSource = "Inline"
             Octopus.Action.Script.Syntax = "PowerShell"
@@ -249,6 +246,7 @@ step "always-notify-of-deployment-process" {
             Octopus.Action.Email.Body = "#{Notification.Body.Text}"
             Octopus.Action.Email.Subject = "#{Notification.Subject.Text}"
             Octopus.Action.Email.ToTeamIds = "trident-notifications"
+            Octopus.Action.RunOnServer = "false"
         }
         worker_pool_variable = ""
     }
@@ -260,7 +258,6 @@ step "notify-developers-of-failure" {
 
     action {
         properties = {
-            Octopus.Action.RunOnServer = "true"
             Octopus.Action.Template.Id = "ActionTemplates-22"
             Octopus.Action.Template.Version = "14"
             ssn_Color = "danger"
