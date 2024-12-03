@@ -43,7 +43,7 @@ step "run-octopus-deploy-runbook" {
 
 step "generate-db-delta-report" {
     condition = "Variable"
-    name = "Generate DB Delta Report"
+    name = "Generate Database Delta Report"
     properties = {
         Octopus.Step.ConditionVariableExpression = "#{unless Octopus.Deployment.Error}#{Octopus.Action[Calculate Deployment Mode].Output.RunOnDeploy}#{/unless}"
     }
@@ -135,7 +135,6 @@ step "approve-db-delta-script" {
             Octopus.Action.RunOnServer = "false"
         }
         tenant_tags = ["Branch Type/Pseudo"]
-        worker_pool_variable = ""
     }
 }
 
@@ -218,7 +217,6 @@ step "manual-intervention-to-verify-trident-application" {
             Octopus.Action.Manual.ResponsibleTeamIds = "global/octopus-managers,test"
             Octopus.Action.RunOnServer = "false"
         }
-        worker_pool_variable = ""
     }
 }
 
@@ -248,7 +246,6 @@ step "always-notify-of-deployment-process" {
             Octopus.Action.Email.ToTeamIds = "trident-notifications"
             Octopus.Action.RunOnServer = "false"
         }
-        worker_pool_variable = ""
     }
 }
 
