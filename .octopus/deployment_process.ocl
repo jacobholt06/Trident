@@ -226,7 +226,7 @@ step "disable-maintenance-mode" {
     action {
         action_type = "Octopus.Script"
         properties = {
-            Octopus.Action.Script.ScriptBody = "Write-Host \"Disable Maintenance Mode\""
+            Octopus.Action.Script.ScriptBody = "Write-Host \"Disable Maintenance Mode Test\""
             Octopus.Action.Script.ScriptSource = "Inline"
             Octopus.Action.Script.Syntax = "PowerShell"
         }
